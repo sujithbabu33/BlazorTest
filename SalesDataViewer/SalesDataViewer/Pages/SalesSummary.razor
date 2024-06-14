@@ -1,0 +1,54 @@
+﻿@page "/sales-summary"
+@using SalesDataViewer.Models
+@inject Services.CsvService CsvService
+
+<PageTitle>Sales Summary</PageTitle>
+
+<h3>Sales Summary</h3>
+
+@if (salesRecords == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Segment</th>
+            <th>Country</th>
+            <th>Product</th>
+            <th>Discount Band</th>
+            <th>Units Sold</th>
+            <th>Manufacturing Price</th>
+            <th>Sale Price</th>
+            <th>Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var record in salesRecords)
+        {
+            <tr>
+                <td>@record.Segment</td>
+                <td>@record.Country</td>
+                <td>@record.Product</td>
+                <td>@record.DiscountBand</td>
+                <td>@record.UnitsSold</td>
+                <td>@record.ManufacturingPriceWithSymbol</td>
+                <td>@record.SalePriceWithSymbol</td>
+                <td>@record.Date.ToShortDateString()</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<SalesRecord> salesRecords;
+
+    protected override async Task OnInitializedAsync()
+    {
+        //var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/Data.csv");
+        salesRecords = await CsvService.GetSalesRecordsAsync("Data.csv");
+    }
+}
